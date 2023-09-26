@@ -36,7 +36,7 @@ class PrioritizedPlanningSolver(object):
             if path is None:
                 raise BaseException('No solutions')
             result.append(path)
-
+            constraints = [{'agent': 0, 'loc': [(3,4)], 'timestep': 5}]
             ##############################
             # Task 2: Add constraints here
             #         Useful variables:

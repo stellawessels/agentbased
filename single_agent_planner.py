@@ -49,13 +49,22 @@ def compute_heuristics(my_map, goal):
 
 def build_constraint_table(constraints, agent):
     ##############################
-    # Task 1.2/1.3: Return a table that constains the list of constraints of
+    # Task 1.2/1.3: Return a table that contains the list of constraints of
     #               the given agent for each time step. The table can be used
     #               for a more efficient constraint violation check in the 
     #               is_constrained function.
 
-    pass
+    # constraints = [{'agent': 0, 'loc': [(3,4)], 'timestep': 5}]
+    constraint_table = []
 
+    for i in len(constraints):
+        if constraints[i]['agent'] == agent:
+            constraint_table[constraints[i]]
+            tobeappended = dict()
+            tobeappended[constraints[i]['timestep']] = constraints[i]
+            constraint_table.append(tobeappended)
+    print(constraint_table)
+    return constraint_table
 
 def get_location(path, time):
     if time < 0:
@@ -81,9 +90,18 @@ def is_constrained(curr_loc, next_loc, next_time, constraint_table):
     # Task 1.2/1.3: Check if a move from curr_loc to next_loc at time step next_time violates
     #               any given constraint. For efficiency the constraints are indexed in a constraint_table
     #               by time step, see build_constraint_table.
+    #for i in len(constraint_table):
+
+
+   # if child['goal_timestep'] = constraint_table[]:
+    #    if child['loc'] = next_loc:
+    #      return True
+     #   else:
+      #      return False
+    #else:
+      #  return False
 
     pass
-
 
 def push_node(open_list, node):
     heapq.heappush(open_list, (node['g_val'] + node['h_val'], node['h_val'], node['loc'], node))
@@ -116,6 +134,7 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
     earliest_goal_timestep = 0
     h_value = h_values[start_loc]
     root = {'loc': start_loc, 'g_val': 0, 'h_val': h_value, 'parent': None, 'goal_timestep': earliest_goal_timestep}
+    print(root)
     push_node(open_list, root)
     closed_list[(root['loc'], root['goal_timestep'])] = root
     while len(open_list) > 0:
