@@ -90,18 +90,14 @@ def is_constrained(curr_loc, next_loc, next_time, constraint_table):
     # Task 1.2/1.3: Check if a move from curr_loc to next_loc at time step next_time violates
     #               any given constraint. For efficiency the constraints are indexed in a constraint_table
     #               by time step, see build_constraint_table.
-    #for i in len(constraint_table):
-
-
-   # if child['goal_timestep'] = constraint_table[]:
-    #    if child['loc'] = next_loc:
-    #      return True
-     #   else:
-      #      return False
-    #else:
-      #  return False
-
-    pass
+    for i in len(constraint_table):
+        if child['goal_timestep'] = constraint_table[i]['timestep']:
+            if child['loc'] = constraint_table[i]['loc']:
+                return True
+            else:
+                return False
+    else:
+        return False
 
 def push_node(open_list, node):
     heapq.heappush(open_list, (node['g_val'] + node['h_val'], node['h_val'], node['loc'], node))
