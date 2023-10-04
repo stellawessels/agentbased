@@ -1,7 +1,7 @@
 import heapq
 
 def move(loc, dir):
-    directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+    directions = [(0, -1), (1, 0), (0, 1), (-1, 0)] #add [0,0] here
     return loc[0] + directions[dir][0], loc[1] + directions[dir][1]
 
 
@@ -46,7 +46,7 @@ def compute_heuristics(my_map, goal):
         h_values[loc] = node['cost']
     return h_values
 
-
+constraints = [{'agent': 0, 'loc': [(3,4)], 'timestep': 5}]
 def build_constraint_table(constraints, agent):
     ##############################
     # Task 1.2/1.3: Return a table that contains the list of constraints of
@@ -55,14 +55,18 @@ def build_constraint_table(constraints, agent):
     #               is_constrained function.
 
     # constraints = [{'agent': 0, 'loc': [(3,4)], 'timestep': 5}]
-    constraint_table = []
+    constraint_table = {}
 
-    for i in len(constraints):
-        if constraints[i]['agent'] == agent:
-            constraint_table[constraints[i]]
-            tobeappended = dict()
-            tobeappended[constraints[i]['timestep']] = constraints[i]
-            constraint_table.append(tobeappended)
+    for idx_c, constraint in enumerate(constraints):
+        if constraint['agent'] == agent:
+            if constraint['timestep'] in constraint_table:
+                constraint_table[constraint['timestep']].append(constraint['loc'][0])
+            else:
+                constraint_table[constraint['timestep']] = [constraint['loc'][0]]
+            # old
+            # tobeappended = dict()
+            # tobeappended[constraint['timestep']] = constraint['loc']
+            # constraint_table.append(tobeappended)
     print(constraint_table)
     return constraint_table
 
@@ -83,21 +87,34 @@ def get_path(goal_node):
         curr = curr['parent']
     path.reverse()
     return path
-
+childexample = {'loc': (3,4),
+                    'g_val': 2,
+                    'h_val': 3,
+                    'parent': (0,1),
+                     'goal_timestep': 5}
 
 def is_constrained(curr_loc, next_loc, next_time, constraint_table):
     ##############################
     # Task 1.2/1.3: Check if a move from curr_loc to next_loc at time step next_time violates
     #               any given constraint. For efficiency the constraints are indexed in a constraint_table
     #               by time step, see build_constraint_table.
-    for i in len(constraint_table):
-        if child['goal_timestep'] = constraint_table[i]['timestep']:
-            if child['loc'] = constraint_table[i]['loc']:
+    if next_time in constraint_table:
+        list_constrained_locations = constraint_table[next_time]
+        for constrained_location in list_constrained_locations:
+            if next_loc == constrained_location:
                 return True
-            else:
-                return False
-    else:
-        return False
+
+    return False
+
+    # old
+    # for i in constraint_table:
+    #     if childexample['goal_timestep'] == constraint_table[i]['timestep']:
+    #         if childexample['loc'] == constraint_table[i]['loc']:
+    #             return True
+    #         else:
+    #             return False
+    # else:
+    #     return False
 
 def push_node(open_list, node):
     heapq.heappush(open_list, (node['g_val'] + node['h_val'], node['h_val'], node['loc'], node))
@@ -114,17 +131,19 @@ def compare_nodes(n1, n2):
 
 
 def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
+    print(f"2. Agent number {agent}")
+    b = build_constraint_table(constraints, agent)
+    agent_is_constrained_at_goal_timestep = is_constrained(childexample['loc'], childexample['loc'], childexample['goal_timestep'], b)
+    print(a)
     """ my_map      - binary obstacle map
         start_loc   - start position
         goal_loc    - goal position
         agent       - the agent that is being re-planned
         constraints - constraints defining where robot should or cannot go at each timestep
     """
-
     ##############################
     # Task 1.1: Extend the A* search to search in the space-time domain
     #           rather than space domain, only.
-
     open_list = []
     closed_list = dict()
     earliest_goal_timestep = 0
@@ -139,7 +158,7 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
         # Task 1.4: Adjust the goal test condition to handle goal constraints
         if curr['loc'] == goal_loc:
             return get_path(curr)
-        for dir in range(4):
+        for dir in range(4): # somewhere here implement constraint!
             child_loc = move(curr['loc'], dir)
             if my_map[child_loc[0]][child_loc[1]]:
                 continue
@@ -164,6 +183,7 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
                      'goal_timestep': curr['goal_timestep'] + 1}
         closed_list[(still['loc'], still['goal_timestep'])] = still
         push_node(open_list, still)
+
 
 
     return None  # Failed to find solutions
