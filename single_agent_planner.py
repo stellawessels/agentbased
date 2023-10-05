@@ -60,9 +60,9 @@ def build_constraint_table(constraints, agent):
     for constraint in constraints:
         if constraint['agent'] == agent:
             if constraint['timestep'] in constraint_table:
-                constraint_table[constraint['timestep']].append(constraint['loc'][0])
+                constraint_table[constraint['timestep']].append(constraint['loc']) # removed [0] here when adding edge constraints to is_constrained
             else:
-                constraint_table[constraint['timestep']] = [constraint['loc'][0]]
+                constraint_table[constraint['timestep']] = [constraint['loc']]# removed [0] here when adding edge constraints to is_constrained
             # old
             # tobeappended = dict()
             # tobeappended[constraint['timestep']] = constraint['loc']
@@ -105,9 +105,12 @@ def is_constrained(curr_loc, next_loc, next_time, constraint_table):
         list_edge_constraints = []
         for i in range(len(list_constrained_locations)):
             if len(list_constrained_locations[i]) == 1:
-                list_vertex_constraints.append(list_constrained_locations[i])
+                list_vertex_constraints.append(list_constrained_locations[i][0])
             else:
                 list_edge_constraints.append(list_constrained_locations[i])
+        print(f"List of constrained locations: {list_constrained_locations}")
+        print(f"List of edge constraints: {list_edge_constraints}")
+        print(f"List of vertex constraints: {list_vertex_constraints}")
         for edge_constraint in list_edge_constraints:
             if [curr_loc,next_loc] == edge_constraint:
                 return True
@@ -117,9 +120,7 @@ def is_constrained(curr_loc, next_loc, next_time, constraint_table):
         # for constrained_location in list_constrained_locations:
         #     if next_loc == constrained_location:
         #         return True
-        print(f"List of constrained locations: {list_constrained_locations}")
-        print(f"List of edge constraints: {list_edge_constraints}")
-        print(f"List of vertex constraints: {list_vertex_constraints}")
+
     return False
 
     # old
