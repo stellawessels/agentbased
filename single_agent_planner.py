@@ -86,6 +86,7 @@ def get_path(goal_node):
         path.append(curr['loc'])
         curr = curr['parent']
     path.reverse()
+    # print(f"Path: {path}")
     return path
 childexample = {'loc': (3,4),
                     'g_val': 2,
@@ -98,6 +99,7 @@ def is_constrained(curr_loc, next_loc, next_time, constraint_table):
     # Task 1.2/1.3: Check if a move from curr_loc to next_loc at time step next_time violates
     #               any given constraint. For efficiency the constraints are indexed in a constraint_table
     #               by time step, see build_constraint_table.
+    print(f"Next time: {next_time}")
     if next_time in constraint_table:
         list_constrained_locations = constraint_table[next_time]
         # Separate edge constraints from vertex constraints
@@ -149,8 +151,8 @@ def compare_nodes(n1, n2):
 
 def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
     print(f"2. Agent number {agent}")
-    b = build_constraint_table(constraints, agent)
-    agent_is_constrained_at_goal_timestep = is_constrained(childexample['loc'], childexample['loc'], childexample['goal_timestep'], b)
+    constraint_table = build_constraint_table(constraints, agent)
+    agent_is_constrained_at_goal_timestep = is_constrained(childexample['loc'], childexample['loc'], childexample['goal_timestep'], constraint_table)
     # print(a)
     """ my_map      - binary obstacle map
         start_loc   - start position
@@ -166,7 +168,7 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
     earliest_goal_timestep = 0
     h_value = h_values[start_loc]
     root = {'loc': start_loc, 'g_val': 0, 'h_val': h_value, 'parent': None, 'goal_timestep': earliest_goal_timestep}
-    print(root)
+    print(f"Root: {root}")
     push_node(open_list, root)
     closed_list[(root['loc'], root['goal_timestep'])] = root
     while len(open_list) > 0:
@@ -179,11 +181,13 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
             child_loc = move(curr['loc'], dir)
             if my_map[child_loc[0]][child_loc[1]]:
                 continue
+            if is_constrained(curr['loc'], child_loc, curr['goal_timestep'] + 1, constraint_table):
+                break
             child = {'loc': child_loc,
                     'g_val': curr['g_val'] + 1,
                     'h_val': h_values[child_loc],
                     'parent': curr,
-                     'goal_timestep': curr['goal_timestep'] + 1}
+                    'goal_timestep': curr['goal_timestep'] + 1}
             if (child['loc']) in closed_list:
                 existing_node = closed_list[(child['loc'])]
                 if compare_nodes(child, existing_node):
@@ -192,7 +196,6 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
             else:
                 closed_list[(child['loc'], child['goal_timestep'])] = child
                 push_node(open_list, child)
-
         still = {'loc': curr['loc'],
                     'g_val': curr['g_val'],
                     'h_val': curr['h_val'],

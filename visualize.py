@@ -92,6 +92,7 @@ class Animation:
         return self.patches + self.artists
 
     def animate_func(self, t):
+        # print(t)
         for k in range(len(self.paths)):
             pos = self.get_state(t / 10, self.paths[k])
             self.agents[k].center = (pos[0], pos[1])
