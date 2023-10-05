@@ -67,7 +67,7 @@ def build_constraint_table(constraints, agent):
             # tobeappended = dict()
             # tobeappended[constraint['timestep']] = constraint['loc']
             # constraint_table.append(tobeappended)
-    #print(f"Constraint Table: {constraint_table}")
+    print(f"Constraint Table: {constraint_table}")
     return constraint_table
 
 def get_location(path, time):
@@ -86,7 +86,7 @@ def get_path(goal_node):
         path.append(curr['loc'])
         curr = curr['parent']
     path.reverse()
-    # print(f"Path: {path}")
+    print(f"Path: {path}")
     return path
 childexample = {'loc': (3,4),
                     'g_val': 2,
@@ -184,21 +184,29 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
             check =  is_constrained(curr['loc'], child_loc, curr['goal_timestep'] + 1, constraint_table)
             print(check)
             if check:
-               break
-            child = {'loc': child_loc,
+                tobepushed  = {'loc': curr['loc'],
                     'g_val': curr['g_val'] + 1,
-                    'h_val': h_values[child_loc],
+                    'h_val': curr['h_val'],
                     'parent': curr,
                     'goal_timestep': curr['goal_timestep'] + 1}
-            if (child['loc']) in closed_list:
-                existing_node = closed_list[(child['loc'])]
-                if compare_nodes(child, existing_node):
+                closed_list[(tobepushed['loc'], tobepushed['goal_timestep'])] = tobepushed
+                print(tobepushed)
+                push_node(open_list, tobepushed)
+            else:
+                child = {'loc': child_loc,
+                        'g_val': curr['g_val'] + 1,
+                        'h_val': h_values[child_loc],
+                        'parent': curr,
+                        'goal_timestep': curr['goal_timestep'] + 1}
+                if (child['loc']) in closed_list:
+                    existing_node = closed_list[(child['loc'])]
+                    if compare_nodes(child, existing_node):
+                        closed_list[(child['loc'], child['goal_timestep'])] = child
+                        push_node(open_list, child)
+                else:
                     closed_list[(child['loc'], child['goal_timestep'])] = child
                     push_node(open_list, child)
-            else:
-                closed_list[(child['loc'], child['goal_timestep'])] = child
-                push_node(open_list, child)
-        # still = {'loc': curr['loc'],
+            # still = {'loc': curr['loc'],
         #             'g_val': curr['g_val'],
         #             'h_val': curr['h_val'],
         #             'parent': curr,
