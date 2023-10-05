@@ -189,6 +189,8 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, atgoal, go
         #############################
         # Task 1.4: Adjust the goal test condition to handle goal constraints
         if curr['loc'] == goal_loc:
+            is there another constraint in the future?
+                is the constraint now
             # print("maxlist", max(list(constraint_table)))
             # print(curr['goal_timestep'])
             # if curr['goal_timestep'] >= max(list(constraint_table)):
