@@ -57,7 +57,7 @@ def build_constraint_table(constraints, agent):
     # constraints = [{'agent': 0, 'loc': [(3,4)], 'timestep': 5}]
     constraint_table = {}
 
-    for idx_c, constraint in enumerate(constraints):
+    for constraint in constraints:
         if constraint['agent'] == agent:
             if constraint['timestep'] in constraint_table:
                 constraint_table[constraint['timestep']].append(constraint['loc'][0])
@@ -67,7 +67,7 @@ def build_constraint_table(constraints, agent):
             # tobeappended = dict()
             # tobeappended[constraint['timestep']] = constraint['loc']
             # constraint_table.append(tobeappended)
-    print(constraint_table)
+    print(f"Constraint Table: {constraint_table}")
     return constraint_table
 
 def get_location(path, time):
@@ -100,10 +100,26 @@ def is_constrained(curr_loc, next_loc, next_time, constraint_table):
     #               by time step, see build_constraint_table.
     if next_time in constraint_table:
         list_constrained_locations = constraint_table[next_time]
-        for constrained_location in list_constrained_locations:
+        # Separate edge constraints from vertex constraints
+        list_vertex_constraints = []
+        list_edge_constraints = []
+        for i in range(len(list_constrained_locations)):
+            if len(list_constrained_locations[i]) == 1:
+                list_vertex_constraints.append(list_constrained_locations[i])
+            else:
+                list_edge_constraints.append(list_constrained_locations[i])
+        for edge_constraint in list_edge_constraints:
+            if [curr_loc,next_loc] == edge_constraint:
+                return True
+        for constrained_location in list_vertex_constraints:
             if next_loc == constrained_location:
                 return True
-
+        # for constrained_location in list_constrained_locations:
+        #     if next_loc == constrained_location:
+        #         return True
+        print(f"List of constrained locations: {list_constrained_locations}")
+        print(f"List of edge constraints: {list_edge_constraints}")
+        print(f"List of vertex constraints: {list_vertex_constraints}")
     return False
 
     # old
@@ -134,7 +150,7 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
     print(f"2. Agent number {agent}")
     b = build_constraint_table(constraints, agent)
     agent_is_constrained_at_goal_timestep = is_constrained(childexample['loc'], childexample['loc'], childexample['goal_timestep'], b)
-    print(a)
+    # print(a)
     """ my_map      - binary obstacle map
         start_loc   - start position
         goal_loc    - goal position
