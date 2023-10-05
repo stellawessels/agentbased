@@ -70,6 +70,8 @@ def build_constraint_table(constraints, agent):
     print(f"Constraint Table: {constraint_table}")
     return constraint_table
 
+
+
 def get_location(path, time):
     if time < 0:
         return path[0]
@@ -149,7 +151,7 @@ def compare_nodes(n1, n2):
     return n1['g_val'] + n1['h_val'] < n2['g_val'] + n2['h_val']
 
 
-def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
+def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, atgoal):
     print(f"2. Agent number {agent}")
     constraint_table = build_constraint_table(constraints, agent)
     #agent_is_constrained_at_goal_timestep = is_constrained(childexample['loc'], childexample['loc'], childexample['goal_timestep'], constraint_table)
@@ -176,7 +178,14 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
         #############################
         # Task 1.4: Adjust the goal test condition to handle goal constraints
         if curr['loc'] == goal_loc:
-            return get_path(curr)
+            print("maxlist", max(list(constraint_table)))
+            print(curr['goal_timestep'])
+            if curr['goal_timestep'] >= max(list(constraint_table)):
+                print("check")
+                #print(agent)
+                #atgoal[str(agent)] = curr
+                #print("at goal",atgoal)
+                return get_path(curr)
         for dir in range(5): # somewhere here implement constraint!
             child_loc = move(curr['loc'], dir)
             if my_map[child_loc[0]][child_loc[1]]:
