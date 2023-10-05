@@ -1,7 +1,7 @@
 import heapq
 
 def move(loc, dir):
-    directions = [(0, -1), (1, 0), (0, 1), (-1, 0)] #add [0,0] here
+    directions = [(0, -1), (1, 0), (0, 1), (-1, 0),(0,0)] #add [0,0] here
     return loc[0] + directions[dir][0], loc[1] + directions[dir][1]
 
 
@@ -67,7 +67,7 @@ def build_constraint_table(constraints, agent):
             # tobeappended = dict()
             # tobeappended[constraint['timestep']] = constraint['loc']
             # constraint_table.append(tobeappended)
-    print(f"Constraint Table: {constraint_table}")
+    #print(f"Constraint Table: {constraint_table}")
     return constraint_table
 
 def get_location(path, time):
@@ -110,9 +110,9 @@ def is_constrained(curr_loc, next_loc, next_time, constraint_table):
                 list_vertex_constraints.append(list_constrained_locations[i][0])
             else:
                 list_edge_constraints.append(list_constrained_locations[i])
-        print(f"List of constrained locations: {list_constrained_locations}")
-        print(f"List of edge constraints: {list_edge_constraints}")
-        print(f"List of vertex constraints: {list_vertex_constraints}")
+        #print(f"List of constrained locations: {list_constrained_locations}")
+        #print(f"List of edge constraints: {list_edge_constraints}")
+        #print(f"List of vertex constraints: {list_vertex_constraints}")
         for edge_constraint in list_edge_constraints:
             if [curr_loc,next_loc] == edge_constraint:
                 return True
@@ -152,7 +152,7 @@ def compare_nodes(n1, n2):
 def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
     print(f"2. Agent number {agent}")
     constraint_table = build_constraint_table(constraints, agent)
-    agent_is_constrained_at_goal_timestep = is_constrained(childexample['loc'], childexample['loc'], childexample['goal_timestep'], constraint_table)
+    #agent_is_constrained_at_goal_timestep = is_constrained(childexample['loc'], childexample['loc'], childexample['goal_timestep'], constraint_table)
     # print(a)
     """ my_map      - binary obstacle map
         start_loc   - start position
@@ -177,12 +177,14 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
         # Task 1.4: Adjust the goal test condition to handle goal constraints
         if curr['loc'] == goal_loc:
             return get_path(curr)
-        for dir in range(4): # somewhere here implement constraint!
+        for dir in range(5): # somewhere here implement constraint!
             child_loc = move(curr['loc'], dir)
             if my_map[child_loc[0]][child_loc[1]]:
                 continue
-            if is_constrained(curr['loc'], child_loc, curr['goal_timestep'] + 1, constraint_table):
-                break
+            check =  is_constrained(curr['loc'], child_loc, curr['goal_timestep'] + 1, constraint_table)
+            print(check)
+            if check:
+               break
             child = {'loc': child_loc,
                     'g_val': curr['g_val'] + 1,
                     'h_val': h_values[child_loc],
@@ -196,13 +198,13 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
             else:
                 closed_list[(child['loc'], child['goal_timestep'])] = child
                 push_node(open_list, child)
-        still = {'loc': curr['loc'],
-                    'g_val': curr['g_val'],
-                    'h_val': curr['h_val'],
-                    'parent': curr,
-                     'goal_timestep': curr['goal_timestep'] + 1}
-        closed_list[(still['loc'], still['goal_timestep'])] = still
-        push_node(open_list, still)
+        # still = {'loc': curr['loc'],
+        #             'g_val': curr['g_val'],
+        #             'h_val': curr['h_val'],
+        #             'parent': curr,
+        #              'goal_timestep': curr['goal_timestep'] + 1}
+        # closed_list[(still['loc'], still['goal_timestep'])] = still
+        # push_node(open_list, still)
 
 
 
