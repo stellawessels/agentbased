@@ -170,6 +170,7 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
                      'h_val': h_values[child_loc],
                      'parent': curr,
                      'timestep': curr['timestep'] + 1}
+            # fklvnfko
             if is_constrained(curr['loc'], child_loc, child['timestep'], constraint_table):
                 break
             if (child['loc'], child['timestep']) in closed_list:
