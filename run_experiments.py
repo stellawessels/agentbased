@@ -1,3 +1,4 @@
+#python run_experiments.py --instance instances/exp2_2.txt --solver Prioritized
 """
 Main file to run experiments and show animation.
 

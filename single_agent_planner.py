@@ -164,7 +164,10 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals):
 
     constraint_table = build_constraint_table(constraints, agent)  # builds constraint table
     goal_constraint_table = build_goal_constraint_table(constraints, agent, goals)  # builds goal constraint table
-    earliest_goal_constraint_timestep = max(goal_constraint_table.keys())
+    if len(goal_constraint_table) == 0:
+        earliest_goal_constraint_timestep = 0
+    else:
+        earliest_goal_constraint_timestep = max(goal_constraint_table.keys())
     h_value = h_values[start_loc]
     root = {'loc': start_loc, 'g_val': 0, 'h_val': h_value, 'parent': None, 'timestep': timestep}
     push_node(open_list, root)
