@@ -1,7 +1,8 @@
 import heapq
 
+
 def move(loc, dir):
-    directions = [(0, -1), (1, 0), (0, 1), (-1, 0),(0,0)] #add [0,0] here
+    directions = [(0, -1), (1, 0), (0, 1), (-1, 0), (0, 0)]
     return loc[0] + directions[dir][0], loc[1] + directions[dir][1]
 
 
@@ -25,8 +26,8 @@ def compute_heuristics(my_map, goal):
             child_loc = move(loc, dir)
             child_cost = cost + 1
             if child_loc[0] < 0 or child_loc[0] >= len(my_map) \
-               or child_loc[1] < 0 or child_loc[1] >= len(my_map[0]):
-               continue
+                    or child_loc[1] < 0 or child_loc[1] >= len(my_map[0]):
+                continue
             if my_map[child_loc[0]][child_loc[1]]:
                 continue
             child = {'loc': child_loc, 'cost': child_cost}
@@ -46,40 +47,26 @@ def compute_heuristics(my_map, goal):
         h_values[loc] = node['cost']
     return h_values
 
-constraints = [{'agent': 0, 'loc': [(3,4)], 'timestep': 5}]
+
 def build_constraint_table(constraints, agent):
     ##############################
-    # Task 1.2/1.3: Return a table that contains the list of constraints of
+    # Task 1.2/1.3: Return a table that constraints the list of constraints of
     #               the given agent for each time step. The table can be used
-    #               for a more efficient constraint violation check in the 
+    #               for a more efficient constraint violation check in the
     #               is_constrained function.
-
-    # constraints = [{'agent': 0, 'loc': [(3,4)], 'timestep': 5}]
     constraint_table = {}
-
     for constraint in constraints:
         if constraint['agent'] == agent:
+            # check if there is a constraint at this timestep already
             if constraint['timestep'] in constraint_table:
-                constraint_table[constraint['timestep']].append(constraint['loc']) # removed [0] here when adding edge constraints to is_constrained
+                # if True, append a new constraint
+                constraint_table[constraint['timestep']].append(
+                    constraint['loc'])
             else:
-                constraint_table[constraint['timestep']] = [constraint['loc']]# removed [0] here when adding edge constraints to is_constrained
-            # old
-            # tobeappended = dict()
-            # tobeappended[constraint['timestep']] = constraint['loc']
-            # constraint_table.append(tobeappended)
-    print(f"Constraint Table: {constraint_table}")
+                # if False, create a new key for the timestep and add the constraint
+                constraint_table[constraint['timestep']] = [
+                    constraint['loc']]
     return constraint_table
-def build_goal_constraint_table(constraints, agent, goals):
-    goal_constraint_table = {}
-    for constraint in constraints:
-        if constraint['agent'] == agent:
-            if constraint['loc'] == [goals[agent]]:
-                if constraint['timestep'] in goal_constraint_table:
-                    goal_constraint_table[constraint['timestep']].append(constraint['loc'])
-                else:
-                    goal_constraint_table[constraint['timestep']] = [constraint['loc']]
-    print(f"Goal Constraint Table: {goal_constraint_table}")
-    return goal_constraint_table
 
 
 def get_location(path, time):
@@ -98,23 +85,22 @@ def get_path(goal_node):
         path.append(curr['loc'])
         curr = curr['parent']
     path.reverse()
-    # print(f"Path: {path}")
     return path
-childexample = {'loc': (3,4),
-                    'g_val': 2,
-                    'h_val': 3,
-                    'parent': (0,1),
-                     'goal_timestep': 5}
+
 
 def is_constrained(curr_loc, next_loc, next_time, constraint_table):
     ##############################
     # Task 1.2/1.3: Check if a move from curr_loc to next_loc at time step next_time violates
     #               any given constraint. For efficiency the constraints are indexed in a constraint_table
     #               by time step, see build_constraint_table.
-    # print(f"Next time: {next_time}")
+
+    # Execute if the key next_time is in the constraint table
     if next_time in constraint_table:
+        # Make a list of constrained locations
         list_constrained_locations = constraint_table[next_time]
         # Separate edge constraints from vertex constraints
+        # This is done by separating the constraints with 1 element (next_loc, vertex constraint)
+        # from the constraints with 2 (or !=1) elements ((curr_loc, next_loc), edge constraint)
         list_vertex_constraints = []
         list_edge_constraints = []
         for i in range(len(list_constrained_locations)):
@@ -122,30 +108,16 @@ def is_constrained(curr_loc, next_loc, next_time, constraint_table):
                 list_vertex_constraints.append(list_constrained_locations[i][0])
             else:
                 list_edge_constraints.append(list_constrained_locations[i])
-        #print(f"List of constrained locations: {list_constrained_locations}")
-        #print(f"List of edge constraints: {list_edge_constraints}")
-        #print(f"List of vertex constraints: {list_vertex_constraints}")
+        # Check if there is a constraint
         for edge_constraint in list_edge_constraints:
-            if [curr_loc,next_loc] == edge_constraint:
+            if [curr_loc, next_loc] == edge_constraint:
                 return True
+
         for constrained_location in list_vertex_constraints:
             if next_loc == constrained_location:
                 return True
-        # for constrained_location in list_constrained_locations:
-        #     if next_loc == constrained_location:
-        #         return True
-
     return False
 
-    # old
-    # for i in constraint_table:
-    #     if childexample['goal_timestep'] == constraint_table[i]['timestep']:
-    #         if childexample['loc'] == constraint_table[i]['loc']:
-    #             return True
-    #         else:
-    #             return False
-    # else:
-    #     return False
 
 def push_node(open_list, node):
     heapq.heappush(open_list, (node['g_val'] + node['h_val'], node['h_val'], node['loc'], node))
@@ -161,84 +133,52 @@ def compare_nodes(n1, n2):
     return n1['g_val'] + n1['h_val'] < n2['g_val'] + n2['h_val']
 
 
-def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, atgoal, goals):
-    print(f"Agent number {agent}")
-    constraint_table = build_constraint_table(constraints, agent)
-    goal_constraint_table = build_goal_constraint_table(constraints, agent, goals)
-    #agent_is_constrained_at_goal_timestep = is_constrained(childexample['loc'], childexample['loc'], childexample['goal_timestep'], constraint_table)
-    # print(a)
+def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints):
     """ my_map      - binary obstacle map
         start_loc   - start position
         goal_loc    - goal position
         agent       - the agent that is being re-planned
         constraints - constraints defining where robot should or cannot go at each timestep
     """
+
     ##############################
     # Task 1.1: Extend the A* search to search in the space-time domain
     #           rather than space domain, only.
+
     open_list = []
     closed_list = dict()
     earliest_goal_timestep = 0
+    timestep = 0
+    constraint_table = build_constraint_table(constraints, agent)  # builds constraint table
     h_value = h_values[start_loc]
-    root = {'loc': start_loc, 'g_val': 0, 'h_val': h_value, 'parent': None, 'goal_timestep': earliest_goal_timestep}
-    # print(f"Root: {root}")
+    root = {'loc': start_loc, 'g_val': 0, 'h_val': h_value, 'parent': None, 'timestep': timestep}
     push_node(open_list, root)
-    closed_list[(root['loc'], root['goal_timestep'])] = root
+    closed_list[(root['loc'], root['timestep'])] = root
     while len(open_list) > 0:
         curr = pop_node(open_list)
         #############################
         # Task 1.4: Adjust the goal test condition to handle goal constraints
         if curr['loc'] == goal_loc:
-            if len(goal_constraint_table) >= 1:
-
-            is there another constraint in the future? If no ->get path
-                is the constraint now? if no -> create child now, if yes, go to for loop
-
-            # print("maxlist", max(list(constraint_table)))
-            # print(curr['goal_timestep'])
-            # if curr['goal_timestep'] >= max(list(constraint_table)):
-            #     print("check")
-                #print(agent)
-                #atgoal[str(agent)] = curr
-                #print("at goal",atgoal)
+            print(agent, get_path(curr))
             return get_path(curr)
-        for dir in range(5): # somewhere here implement constraint!
+        for dir in range(5):
             child_loc = move(curr['loc'], dir)
             if my_map[child_loc[0]][child_loc[1]]:
                 continue
-            check = is_constrained(curr['loc'], child_loc, curr['goal_timestep'] + 1, constraint_table)
-            # print(check)
-            if check:
-                tobepushed  = {'loc': curr['loc'],
-                    'g_val': curr['g_val'] + 1,
-                    'h_val': curr['h_val'],
-                    'parent': curr,
-                    'goal_timestep': curr['goal_timestep'] + 1}
-                closed_list[(tobepushed['loc'], tobepushed['goal_timestep'])] = tobepushed
-                # print(tobepushed)
-                push_node(open_list, tobepushed)
-            else:
-                child = {'loc': child_loc,
-                        'g_val': curr['g_val'] + 1,
-                        'h_val': h_values[child_loc],
-                        'parent': curr,
-                        'goal_timestep': curr['goal_timestep'] + 1}
-                if (child['loc']) in closed_list:
-                    existing_node = closed_list[(child['loc'])]
-                    if compare_nodes(child, existing_node):
-                        closed_list[(child['loc'], child['goal_timestep'])] = child
-                        push_node(open_list, child)
-                else:
-                    closed_list[(child['loc'], child['goal_timestep'])] = child
+            child = {'loc': child_loc,
+                     'g_val': curr['g_val'] + 1,
+                     'h_val': h_values[child_loc],
+                     'parent': curr,
+                     'timestep': curr['timestep'] + 1}
+            if is_constrained(curr['loc'], child_loc, child['timestep'], constraint_table):
+                break
+            if (child['loc'], child['timestep']) in closed_list:
+                existing_node = closed_list[(child['loc'], child['timestep'])]
+                if compare_nodes(child, existing_node):
+                    closed_list[(child['loc'], child['timestep'])] = child
                     push_node(open_list, child)
-            # still = {'loc': curr['loc'],
-        #             'g_val': curr['g_val'],
-        #             'h_val': curr['h_val'],
-        #             'parent': curr,
-        #              'goal_timestep': curr['goal_timestep'] + 1}
-        # closed_list[(still['loc'], still['goal_timestep'])] = still
-        # push_node(open_list, still)
-
-
+            else:
+                closed_list[(child['loc'], child['timestep'])] = child
+                push_node(open_list, child)
 
     return None  # Failed to find solutions
