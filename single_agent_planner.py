@@ -163,7 +163,7 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals):
     timestep = 0
 
     constraint_table = build_constraint_table(constraints, agent)  # builds constraint table
-    goal_constraint_table = build_goal_constraint_table(constraints, agent, goals) # builds goal constraint table
+    goal_constraint_table = build_goal_constraint_table(constraints, agent, goals)  # builds goal constraint table
     earliest_goal_constraint_timestep = max(goal_constraint_table.keys())
     h_value = h_values[start_loc]
     root = {'loc': start_loc, 'g_val': 0, 'h_val': h_value, 'parent': None, 'timestep': timestep}
@@ -175,7 +175,6 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals):
         # Task 1.4: Adjust the goal test condition to handle goal constraints
         current_timestep = curr['timestep']
         if curr['loc'] == goal_loc and current_timestep > earliest_goal_constraint_timestep:
-            print(agent, get_path(curr))
             return get_path(curr)
         for dir in range(5):
             child_loc = move(curr['loc'], dir)
@@ -186,9 +185,9 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals):
                      'h_val': h_values[child_loc],
                      'parent': curr,
                      'timestep': curr['timestep'] + 1}
-            # check if there is a constraint present, break if True
+            # check if there is a constraint present, continue if True
             if is_constrained(curr['loc'], child_loc, child['timestep'], constraint_table):
-                break
+                continue
             if (child['loc'], child['timestep']) in closed_list:
                 existing_node = closed_list[(child['loc'], child['timestep'])]
                 if compare_nodes(child, existing_node):
@@ -197,5 +196,6 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals):
             else:
                 closed_list[(child['loc'], child['timestep'])] = child
                 push_node(open_list, child)
+
 
     return None  # Failed to find solutions
