@@ -97,6 +97,8 @@ def get_path(goal_node):
         path.append(curr['loc'])
         curr = curr['parent']
     path.reverse()
+    pathlength_previousagent = len(path)
+    goal_previousagent = path[-1]
     return path
 
 
@@ -145,7 +147,7 @@ def compare_nodes(n1, n2):
     return n1['g_val'] + n1['h_val'] < n2['g_val'] + n2['h_val']
 
 
-def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals):
+def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pathlength_previousagent):
     """ my_map      - binary obstacle map
         start_loc   - start position
         goal_loc    - goal position
@@ -172,6 +174,15 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals):
     root = {'loc': start_loc, 'g_val': 0, 'h_val': h_value, 'parent': None, 'timestep': timestep}
     push_node(open_list, root)
     closed_list[(root['loc'], root['timestep'])] = root
+    print("timestep", timestep)
+    print(agent)
+    if agent > 0:
+        if timestep > pathlength_previousagent:
+            if timestep in constraint_table:
+                constraint_table[timestep].append(goals[agent-1])
+            else:
+                constraint_table[timestep] = [goals[agent-1]]
+
     while len(open_list) > 0:
         curr = pop_node(open_list)
         #############################
@@ -199,6 +210,5 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals):
             else:
                 closed_list[(child['loc'], child['timestep'])] = child
                 push_node(open_list, child)
-
 
     return None  # Failed to find solutions
