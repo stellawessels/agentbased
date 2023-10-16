@@ -174,8 +174,8 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
     root = {'loc': start_loc, 'g_val': 0, 'h_val': h_value, 'parent': None, 'timestep': timestep}
     push_node(open_list, root)
     closed_list[(root['loc'], root['timestep'])] = root
-    print("timestep", timestep)
-    print(agent)
+    #print("timestep", timestep)
+    #print(agent)
     if agent > 0:
         if timestep > pathlength_previousagent:
             if timestep in constraint_table:
