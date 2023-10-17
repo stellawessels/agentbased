@@ -191,28 +191,35 @@ class CBSSolver(object):
                 # No collisions, return the solution
                 self.print_results(node)
                 return node['paths']
-
             collision = node['collisions'][0]  # Choose the first collision
-
+            # Delete collision from the list of collisions
+            node['collisions'] = node['collisions'][1:]
             # Get a list of constraints to resolve the collision
             constraints = standard_splitting(collision)
-
-            if not constraints:
-                continue  # No valid constraints found, move to the next node
-
+            #
+            # for constraint in constraints:
+            #     new_node = node.copy()
+            #     new_node['constraints'] = new_node['constraints'] + [constraint]
+            #     new_node['paths'][constraint['agent']] = a_star(self.my_map, self.starts[constraint['agent']],
+            #                                                     self.goals[constraint['agent']],
+            #                                                     self.heuristics[constraint['agent']],
+            #                                                     constraint['agent'], new_node['constraints'],
+            #                                                     self.goals,
+            #                                                     pathlength_previousagent)
+            #     new_node['cost'] = get_sum_of_cost(new_node['paths'])
+            #     new_node['collisions'] = detect_collisions(new_node['paths'])
+            #     self.push_node(new_node)
             for constraint in constraints:
-                new_node = node.copy()
+                new_node = {'cost': 0, 'constraints': [], 'paths': [], 'collisions': []}
                 new_node['constraints'] = new_node['constraints'] + [constraint]
-                new_node['paths'][constraint['agent']] = a_star(self.my_map, self.starts[constraint['agent']],
-                                                                self.goals[constraint['agent']],
-                                                                self.heuristics[constraint['agent']],
-                                                                constraint['agent'], new_node['constraints'],
-                                                                self.goals,
-                                                                pathlength_previousagent)
-                new_node['cost'] = get_sum_of_cost(new_node['paths'])
-                new_node['collisions'] = detect_collisions(new_node['paths'])
-                self.push_node(new_node)
-
+                new_node['paths'] = node['paths']
+                a_i = constraint['agent']
+                path = a_star(self.my_map, self.starts[a_i], self.goals[a_i], self.heuristics[a_i], a_i, new_node['constraints'], self.goals, path_lengths)
+                if path is not None:
+                    new_node['paths'][a_i] = path
+                    new_node['collisions'] = detect_collisions(new_node['paths'])
+                    new_node['cost'] = get_sum_of_cost(new_node['paths'])
+                    self.push_node(new_node)
         self.print_results(root)
         return root['paths']
 
