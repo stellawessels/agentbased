@@ -147,7 +147,7 @@ def compare_nodes(n1, n2):
     return n1['g_val'] + n1['h_val'] < n2['g_val'] + n2['h_val']
 
 
-def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pathlength_previousagent):
+def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, path_lengths):
     """ my_map      - binary obstacle map
         start_loc   - start position
         goal_loc    - goal position
@@ -163,7 +163,7 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
     closed_list = dict()
     earliest_goal_timestep = 0
     timestep = 0
-
+    current_timestep = 0
     constraint_table = build_constraint_table(constraints, agent)  # builds constraint table
     goal_constraint_table = build_goal_constraint_table(constraints, agent, goals)  # builds goal constraint table
     if len(goal_constraint_table) == 0:
@@ -176,20 +176,27 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
     closed_list[(root['loc'], root['timestep'])] = root
     #print("timestep", timestep)
     #print(agent)
-    if agent > 0:
-        if timestep > pathlength_previousagent:
-            if timestep in constraint_table:
-                constraint_table[timestep].append(goals[agent-1])
-            else:
-                constraint_table[timestep] = [goals[agent-1]]
+
 
     while len(open_list) > 0:
         curr = pop_node(open_list)
+        # Ensure that if there is no solution due to priority, the algorithm stops after a certain amount of time
+        if curr['timestep'] > 3 * len(my_map) * len(my_map[0]):
+            return None, None
+        if len(path_lengths) > 0 and curr['timestep'] > 3 * path_lengths[-1]:
+            return None, None
         #############################
         # Task 1.4: Adjust the goal test condition to handle goal constraints
         current_timestep = curr['timestep']
+
         if curr['loc'] == goal_loc and current_timestep > earliest_goal_constraint_timestep:
-            return get_path(curr)
+            return get_path(curr), len(get_path(curr))
+        if agent > 0:
+            if len(path_lengths) > 0 and current_timestep + 1 > path_lengths[-1] - 1:
+                if current_timestep + 1 in constraint_table:
+                    constraint_table[current_timestep + 1].append([goals[agent - 1]])
+                else:
+                    constraint_table[current_timestep + 1] = [[goals[agent - 1]]]
         for dir in range(5):
             child_loc = move(curr['loc'], dir)
             if my_map[child_loc[0]][child_loc[1]]:
@@ -210,5 +217,6 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
             else:
                 closed_list[(child['loc'], child['timestep'])] = child
                 push_node(open_list, child)
+                # Use the push_node function to push child to open_list
 
-    return None  # Failed to find solutions
+    return None, None  # Failed to find solutions
