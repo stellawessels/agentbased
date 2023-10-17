@@ -182,15 +182,16 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
         curr = pop_node(open_list)
         # Ensure that if there is no solution due to priority, the algorithm stops after a certain amount of time
         if curr['timestep'] > 3 * len(my_map) * len(my_map[0]):
-            return None, None
+            return None
         if len(path_lengths) > 0 and curr['timestep'] > 3 * path_lengths[-1]:
-            return None, None
+            return None
         #############################
         # Task 1.4: Adjust the goal test condition to handle goal constraints
         current_timestep = curr['timestep']
 
+
         if curr['loc'] == goal_loc and current_timestep > earliest_goal_constraint_timestep:
-            return get_path(curr), len(get_path(curr))
+            return get_path(curr)
         if agent > 0:
             if len(path_lengths) > 0 and current_timestep + 1 > path_lengths[-1] - 1:
                 if current_timestep + 1 in constraint_table:
@@ -219,4 +220,4 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
                 push_node(open_list, child)
                 # Use the push_node function to push child to open_list
 
-    return None, None  # Failed to find solutions
+    return None # Failed to find solutions
