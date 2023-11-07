@@ -165,6 +165,7 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
     timestep = 0
     current_timestep = 0
     constraint_table = build_constraint_table(constraints, agent)  # builds constraint table
+    # print(f"constraint_table {constraint_table}")
     goal_constraint_table = build_goal_constraint_table(constraints, agent, goals)  # builds goal constraint table
     if len(goal_constraint_table) == 0:
         earliest_goal_constraint_timestep = 0
@@ -200,6 +201,9 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
                     constraint_table[current_timestep + 1] = [[goals[agent - 1]]]
         for dir in range(5):
             child_loc = move(curr['loc'], dir)
+            if child_loc[0] < 0 or child_loc[0] >= len(my_map) \
+                    or child_loc[1] < 0 or child_loc[1] >= len(my_map[0]):
+                continue
             if my_map[child_loc[0]][child_loc[1]]:
                 continue
             child = {'loc': child_loc,
