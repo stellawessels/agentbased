@@ -182,7 +182,7 @@ class CBSSolver(object):
         root['cost'] = get_sum_of_cost(root['paths'])
         root['collisions'] = detect_collisions(root['paths'])
         self.push_node(root)
-        print(f"root: {root}")
+        # print(f"root: {root}")
         # Task 3.1: Testing
         # print(f"root['collisions']: {root['collisions']}")
 

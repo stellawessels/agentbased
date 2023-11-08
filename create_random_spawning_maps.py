@@ -1,8 +1,8 @@
 import random
 # Set the environment number and number of agents.
 env = 3  # 1, 2, or 3
-numb_agents = 5  # max 18
-numb_maps = 2
+numb_agents = 10  # max 18
+numb_maps = 1
 
 def create_map(env, numb_agents, file_index):
     # Define starting and goal coordinates for each agent.
