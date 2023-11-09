@@ -225,3 +225,25 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
                 # Use the push_node function to push child to open_list
 
     return None # Failed to find solutions
+
+
+def get_path_distance(path):
+    distance = 0
+    for i in range(len(path) - 1):
+        if path[i] != path[i+1]:
+            distance += 1
+    return distance
+
+
+def get_path_time(path):
+    for i in reversed(range(len(path) - 1)):
+        if path[i] != path[-1]:
+            return i + 1
+
+
+def get_distance_ratio(path, my_map, start, goal, heuristic, i, constraints, goals, path_lengths):
+    return get_path_distance(path) / get_path_distance(a_star(my_map, start, goal, heuristic, i, constraints, goals, path_lengths))
+
+def get_time_ratio(path, my_map, start, goal, heuristic, i, constraints, goals, path_lengths):
+    return get_path_time(path) / get_path_time(a_star(my_map, start, goal, heuristic, i, constraints, goals, path_lengths))
+

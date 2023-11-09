@@ -1,0 +1,42 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+"""" The plan:
+    Make plots which show the performance indicators for each of the algorithms in each environment."""
+
+criteria_options = ["Travel time", "Path distance", "Travel time ratio", "Path length ratio", "Computation time"]
+criteria_option = ["Travel time ratio"] # Adjust this to change the criteria you want to plot
+numb_agents = 4
+env = 1
+solvers = ["CBS", "Prioritized"]
+# Get the data we want to plot
+data = {(solver, agent): pd.read_csv(f"statistics_files/plot_data/plot_data-env{env}-n_agents{agent}-{solver}.csv")
+        for solver in solvers for agent in range(1, numb_agents + 1)}
+
+# Adjust the form of the data to make it compatible with the plotting function
+y_final = []
+for solver in solvers:
+    y = []
+    for i in range(1, numb_agents + 1):
+        for criteria in criteria_option:
+            y.append(float(data[(solver, i)][criteria]))
+            y_final.append(y)
+# Set the multiplier, this is used to make sure the bars are next to each other, and centered around the x-tick.
+# Note that this will only work up to 3 solvers.
+if len(solvers) == 2:
+    multiplier = -0.5
+else:
+    multiplier = 0
+fig, ax = plt.subplots()
+for i in range(len(solvers)):
+    y_final_final = y_final[i*numb_agents:i*numb_agents + numb_agents]
+    offset = 0.25 * multiplier
+    multiplier += 1
+    ax.bar(np.arange(numb_agents) + offset, y_final_final[0], width=0.25, label=f"{solvers[i]}")
+plt.title(f"{criteria_option[0]} performance for the algorithms in environment {env}")
+plt.xlabel("Number of agents")
+plt.ylabel(f"{criteria_option[0]}")
+plt.xticks(np.arange(numb_agents), np.arange(1, numb_agents + 1))
+plt.legend()
+plt.show()
