@@ -5,7 +5,7 @@ from pathlib import Path
 from cbs import CBSSolver
 from prioritized import PrioritizedPlanningSolver
 from distributed import DistributedPlanningSolver # Placeholder for Distributed Planning
-from single_agent_planner import get_path_time, get_path_distance, get_distance_ratio, get_time_ratio, compute_heuristics
+from single_agent_planner import get_path_time, get_path_distance, get_distance_ratio, get_time_ratio
 """" The plan:
 Create X maps for each environment/number of agents combination.
 Run each of the algorithms on each of the maps saving data to a file.
@@ -129,10 +129,10 @@ def import_mapf_instance(filename):
 
 # Set the environment number and number of agents.
 env = 1  # 1, 2, or 3
-numb_agents = 1  # max 18
-numb_maps = 10
-# for index in range(numb_maps):
-#     create_map(env, numb_agents, index)
+numb_agents = 2  # max 18
+numb_maps = 100
+for index in range(numb_maps):
+    create_map(env, numb_agents, index)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Runs various MAPF algorithms')
@@ -176,10 +176,12 @@ if __name__ == '__main__':
             for i in range(len(paths)):
                 travel_times.append(get_path_time(paths[i]))
                 path_distances.append(get_path_distance(paths[i]))
-                time_ratios.append(get_time_ratio(paths[i], my_map, starts[i], goals[i], solver.heuristics[i], i, [], goals, []))
-                distance_ratios.append(get_distance_ratio(paths[i], my_map, starts[i], goals[i], solver.heuristics[i], i, [], goals, []))
+                time_ratios.append(get_time_ratio(paths[i], my_map, starts[i], goals[i], solver.heuristics[i], i,
+                                                  [], goals, []))
+                distance_ratios.append(get_distance_ratio(paths[i], my_map, starts[i], goals[i], solver.heuristics[i],
+                                                          i, [], goals, []))
                 computation_times.append(solver.CPU_time)
-            print(travel_times)
+
             map_mean_travel_time = sum(travel_times) / len(travel_times)
             env_mean_travel_times.append(map_mean_travel_time)
             map_mean_path_distance = sum(path_distances) / len(path_distances)
@@ -191,7 +193,8 @@ if __name__ == '__main__':
             map_mean_computation_time = solver.CPU_time / len(computation_times)
             env_mean_computation_times.append(map_mean_computation_time)
 
-            result_file.write(f"{file_index}, {map_mean_travel_time}, {map_mean_path_distance}, {map_mean_time_ratio}, {map_mean_distance_ratio}, {map_mean_computation_time}\n")
+            result_file.write(f"{file_index}, {map_mean_travel_time}, {map_mean_path_distance}, {map_mean_time_ratio}, "
+                              f"{map_mean_distance_ratio}, {map_mean_computation_time}\n")
         result_file.close()
 
         plot_data = open(f"statistics_files/plot_data/plot_data-env{env}-n_agents{n_agents}-{solver_name}.csv", "w")
@@ -202,5 +205,6 @@ if __name__ == '__main__':
         env_time_ratio = sum(env_mean_time_ratios) / len(env_mean_time_ratios)
         env_distance_ratio = sum(env_mean_distance_ratios) / len(env_mean_distance_ratios)
         env_computation_time = sum(env_mean_computation_times) / len(env_mean_computation_times)
-        plot_data.write(f"{env_travel_time},{env_path_distance},{env_time_ratio},{env_distance_ratio},{env_computation_time}\n")
+        plot_data.write(f"{env_travel_time},{env_path_distance},{env_time_ratio},{env_distance_ratio},"
+                        f"{env_computation_time}\n")
         plot_data.close()

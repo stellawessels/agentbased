@@ -1,8 +1,4 @@
 import random
-# Set the environment number and number of agents.
-env = 3  # 1, 2, or 3
-numb_agents = 10  # max 18
-numb_maps = 1
 
 def create_map(env, numb_agents, file_index):
     # Define starting and goal coordinates for each agent.
@@ -90,5 +86,9 @@ def create_map(env, numb_agents, file_index):
         raise BaseException('No such environment')
 
 
+# Set the environment number and number of agents.
+env = 1  # 1, 2, or 3
+numb_agents = 6  # max 18
+numb_maps = 100
 for index in range(numb_maps):
     create_map(env, numb_agents, index)
