@@ -5,9 +5,10 @@ import numpy as np
 """" The plan:
     Make plots which show the performance indicators for each of the algorithms in each environment."""
 
-criteria_options = ["Travel time", "Path distance", "Travel time ratio", "Path length ratio", "Computation time"]
-criteria_option = ["Travel time ratio"] # Adjust this to change the criteria you want to plot
-numb_agents = 4
+criteria_options = ["Travel time", "Path distance", "Travel time ratio", "Path length ratio",
+                    "Travel time standard deviation", "Ratio failed instances", "Computation time"]
+criteria_option = ["Ratio failed instances"]  # Adjust this to change the criteria you want to plot
+numb_agents = 8
 env = 1
 solvers = ["CBS", "Prioritized"]
 # Get the data we want to plot
@@ -30,13 +31,16 @@ else:
     multiplier = 0
 fig, ax = plt.subplots()
 for i in range(len(solvers)):
+    # Select the part of y_final that belongs to the current solver
     y_final_final = y_final[i*numb_agents:i*numb_agents + numb_agents]
     offset = 0.25 * multiplier
     multiplier += 1
-    ax.bar(np.arange(numb_agents) + offset, y_final_final[0], width=0.25, label=f"{solvers[i]}")
+    # ax.bar(np.arange(numb_agents) + offset, y_final_final[0], width=0.25, label=f"{solvers[i]}")
+    ax.scatter(range(1, numb_agents + 1), y_final_final[0], label=f"{solvers[i]}")
 plt.title(f"{criteria_option[0]} performance for the algorithms in environment {env}")
 plt.xlabel("Number of agents")
 plt.ylabel(f"{criteria_option[0]}")
-plt.xticks(np.arange(numb_agents), np.arange(1, numb_agents + 1))
+# plt.xticks(np.arange(numb_agents), np.arange(1, numb_agents + 1))  # for bar plots
+plt.xticks(np.arange(numb_agents + 1))  # for scatter plots
 plt.legend()
 plt.show()

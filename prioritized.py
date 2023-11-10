@@ -29,7 +29,7 @@ class PrioritizedPlanningSolver(object):
         start_time = timer.time()
         result = []
         path_lengths = []
-        constraints = [{'agent': 0, 'loc': [(1, 5)], 'timestep': 10}
+        constraints = [#{'agent': 0, 'loc': [(1, 5)], 'timestep': 10}
                        #{'agent': 1, 'loc': [(1, 3), (1, 4)], 'timestep': 2},
                        #{'agent': 1, 'loc': [(1, 3), (1, 2)], 'timestep': 2}
                        ]
@@ -40,7 +40,8 @@ class PrioritizedPlanningSolver(object):
             path = a_star(self.my_map, self.starts[i], self.goals[i], self.heuristics[i],
                           i, constraints, self.goals, path_lengths)
             if path is None:
-                raise BaseException('No solutions')
+                print("none")
+                None
             else:
                 path_lengths.append(len(path))
             result.append(path)

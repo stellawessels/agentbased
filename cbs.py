@@ -198,11 +198,11 @@ class CBSSolver(object):
         #             3. Otherwise, choose the first collision and convert to a list of constraints (using your
         #                standard_splitting function). Add a new child node to your open list for each constraint
         #           Ensure to create a copy of any objects that your child nodes might inherit
-        time_limit = 1000
+        time_limit = 10
         while self.open_list:
             print(timer.time() - self.start_time)
             if timer.time() - self.start_time > time_limit:
-                raise BaseException('Time limit reached')
+                return None
             # print(f"open_list: {self.open_list}")
             parent = self.pop_node()
             # print(f"parent: {parent}")

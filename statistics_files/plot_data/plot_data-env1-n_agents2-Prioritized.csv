@@ -1,2 +1,2 @@
-Travel time,Path distance,Travel time ratio,Path length ratio,Computation time
-23.08,23.055,1.002991718426501,1.0018219461697724,0.0004909420013427734
+Travel time,Path distance,Travel time ratio,Path length ratio,Travel time standard deviation,Ratio failed instances,Computation time
+24.35,23.9,1.0366666666666666,1.0145238095238096,1.15,0.0,0.0007823228836059571

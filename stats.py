@@ -128,11 +128,11 @@ def import_mapf_instance(filename):
 
 
 # Set the environment number and number of agents.
-env = 1  # 1, 2, or 3
-numb_agents = 2  # max 18
-numb_maps = 100
-for index in range(numb_maps):
-    create_map(env, numb_agents, index)
+# env = 1  # 1, 2, or 3
+# numb_agents = 2  # max 18
+# numb_maps = 100
+# for index in range(numb_maps):
+#     create_map(env, numb_agents, index)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Runs various MAPF algorithms')
@@ -141,18 +141,21 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     n_agents = args.instance.split("n-agents")[1].split("_")[0]
+    env = args.instance.split("env")[1].split("_")[0]
     # solvers = ["CBS","Prioritized", "Distributed"]
-    solvers = ["CBS", "Prioritized"]
+    solvers = ["Prioritized"]
 
     for solver_name in solvers:
         result_file = open(f"statistics_files/env{env}-n_agents{n_agents}-{solver_name}.csv", "w")
         result_file.write("File index,Travel time,Path distance,Travel time ratio,Path length ratio,"
-                          "Computation time\n")
+                          "Travel time standard deviation,Computation time\n")
         env_mean_travel_times = []
         env_mean_path_distances = []
         env_mean_time_ratios = []
         env_mean_distance_ratios = []
         env_mean_computation_times = []
+        env_sd_travel_time = []
+        n_failed_instances = 0
         for file in sorted(glob.glob(args.instance)):
 
             my_map, starts, goals = import_mapf_instance(file)
@@ -165,8 +168,10 @@ if __name__ == '__main__':
                 solver = DistributedPlanningSolver(my_map, starts, goals,...) # Placeholder for Distributed Planning
             else:
                 raise RuntimeError("Unknown solver!")
-
             paths = solver.find_solution()
+            if paths is None:
+                n_failed_instances += 1
+                continue
             file_index = file.split("index")[1].split(".")[0]
             travel_times = []
             path_distances = []
@@ -190,21 +195,26 @@ if __name__ == '__main__':
             env_mean_time_ratios.append(map_mean_time_ratio)
             map_mean_distance_ratio = sum(distance_ratios) / len(distance_ratios)
             env_mean_distance_ratios.append(map_mean_distance_ratio)
+            variance_travel_time = sum([((x - map_mean_travel_time) ** 2) for x in travel_times]) / len(travel_times)
+            map_sd_travel_time = variance_travel_time ** 0.5
+            env_sd_travel_time.append(map_sd_travel_time)
             map_mean_computation_time = solver.CPU_time / len(computation_times)
             env_mean_computation_times.append(map_mean_computation_time)
 
             result_file.write(f"{file_index}, {map_mean_travel_time}, {map_mean_path_distance}, {map_mean_time_ratio}, "
-                              f"{map_mean_distance_ratio}, {map_mean_computation_time}\n")
+                              f"{map_mean_distance_ratio},{map_sd_travel_time} {map_mean_computation_time}\n")
         result_file.close()
 
         plot_data = open(f"statistics_files/plot_data/plot_data-env{env}-n_agents{n_agents}-{solver_name}.csv", "w")
         plot_data.write("Travel time,Path distance,Travel time ratio,Path length ratio,"
-                          "Computation time\n")
+                        "Travel time standard deviation,Ratio failed instances,Computation time\n")
         env_travel_time = sum(env_mean_travel_times) / len(env_mean_travel_times)
         env_path_distance = sum(env_mean_path_distances) / len(env_mean_path_distances)
         env_time_ratio = sum(env_mean_time_ratios) / len(env_mean_time_ratios)
         env_distance_ratio = sum(env_mean_distance_ratios) / len(env_mean_distance_ratios)
+        env_sd_travel_time = sum(env_sd_travel_time) / len(env_sd_travel_time)
+        env_failed_instances = n_failed_instances / len(glob.glob(args.instance))
         env_computation_time = sum(env_mean_computation_times) / len(env_mean_computation_times)
         plot_data.write(f"{env_travel_time},{env_path_distance},{env_time_ratio},{env_distance_ratio},"
-                        f"{env_computation_time}\n")
+                        f"{env_sd_travel_time},{env_failed_instances},{env_computation_time}\n")
         plot_data.close()
