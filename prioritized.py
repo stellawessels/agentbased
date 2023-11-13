@@ -33,6 +33,7 @@ class PrioritizedPlanningSolver(object):
                        #{'agent': 1, 'loc': [(1, 3), (1, 4)], 'timestep': 2},
                        #{'agent': 1, 'loc': [(1, 3), (1, 2)], 'timestep': 2}
                        ]
+
         # {'agent': 1, 'loc': [(1, 1)], 'timestep': 1}
         # constraints.append({'agent': 0, 'loc': [(1, 2)], 'timestep': 5}) # Test constraint to see whether the constrained_table is formatted correctly.
         for i in range(self.num_of_agents):  # Find path for each agent

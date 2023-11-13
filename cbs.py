@@ -175,6 +175,7 @@ class CBSSolver(object):
         for i in range(self.num_of_agents):  # Find initial path for each agent
             path = a_star(self.my_map, self.starts[i], self.goals[i], self.heuristics[i],
                           i, root['constraints'], self.goals, path_lengths)
+            print(path)
             if path is None:
                 raise BaseException('No solutions')
             root['paths'].append(path)

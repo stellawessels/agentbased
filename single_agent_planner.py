@@ -165,6 +165,7 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
     timestep = 0
     current_timestep = 0
     constraint_table = build_constraint_table(constraints, agent)  # builds constraint table
+    print(constraint_table)
     # print(f"constraint_table {constraint_table}")
     goal_constraint_table = build_goal_constraint_table(constraints, agent, goals)  # builds goal constraint table
     if len(goal_constraint_table) == 0:
