@@ -143,7 +143,7 @@ if __name__ == '__main__':
     n_agents = args.instance.split("n-agents")[1].split("_")[0]
     env = args.instance.split("env")[1].split("_")[0]
     # solvers = ["CBS","Prioritized", "Distributed"]
-    solvers = ["CBS", "Prioritized", "Distributed"]
+    solvers = ["Prioritized", "CBS"]
 
     for solver_name in solvers:
         print(f"Running solver: {solver_name}")

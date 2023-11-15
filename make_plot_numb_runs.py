@@ -1,14 +1,14 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-numb_agents = 6
-env = 3
+numb_agents = 9
+env = 1
 max_no_runs = 500
 solvers = ["Prioritized", "CBS"]
 # solvers = ["CBS"]
 criteria_options = ["Travel time", "Path distance", "Travel time ratio", "Path length ratio",
                     "Travel time standard deviation", "Number of failed instances", "Computation time"]
-criteria_option = ["Number of failed instances"]  # Adjust this to change the criteria you want to plot
+criteria_option = ["Travel time"]  # Adjust this to change the criteria you want to plot
 # Get the data we want to plot
 data = {solver: pd.read_csv(f"statistics_files/env{env}-n_agents{numb_agents}-{solver}.csv")
         for solver in solvers}
@@ -25,7 +25,7 @@ for i in range((max_no_runs + 1) - data["Prioritized"][f"{criteria_options[5]}"]
     for j in range(i):
         to_be_appended.append(data["Prioritized"][f"{criteria_option[0]}"][j])
     values_prioritized.append(list(to_be_appended))
-for i in range((max_no_runs + 1) - data["CBS"][f"{criteria_options[5]}"].iloc[-1]):
+for i in range((max_no_runs + 1) - data["CBS"][f"{criteria_options[5]}"].iloc[-1]-5):
     for j in range(i):
         to_be_appended.append(data["CBS"][f"{criteria_option[0]}"][j])
     values_cbs.append(list(to_be_appended))
