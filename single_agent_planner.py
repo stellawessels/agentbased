@@ -109,6 +109,7 @@ def is_constrained(curr_loc, next_loc, next_time, constraint_table):
     #               by time step, see build_constraint_table.
 
     # Execute if the key next_time is in the constraint table
+    # print(f"next time: {next_time}")
     if next_time in constraint_table:
         # Make a list of constrained locations
         list_constrained_locations = constraint_table[next_time]
@@ -122,6 +123,8 @@ def is_constrained(curr_loc, next_loc, next_time, constraint_table):
                 list_vertex_constraints.append(list_constrained_locations[i][0])
             else:
                 list_edge_constraints.append(list_constrained_locations[i])
+        # print(f"list_vertex_constraints: {list_vertex_constraints}")
+        # print(f"list_edge_constraints: {list_edge_constraints}")
         # Check if there is a constraint
         for edge_constraint in list_edge_constraints:
             if [curr_loc, next_loc] == edge_constraint:
@@ -165,7 +168,7 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
     timestep = 0
     current_timestep = 0
     constraint_table = build_constraint_table(constraints, agent)  # builds constraint table
-    print(constraint_table)
+    # print(f"{agent} constraint table {constraint_table}")
     # print(f"constraint_table {constraint_table}")
     goal_constraint_table = build_goal_constraint_table(constraints, agent, goals)  # builds goal constraint table
     if len(goal_constraint_table) == 0:

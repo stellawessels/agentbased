@@ -33,7 +33,7 @@ X is determined by ...?
 - Option (not my idea) is to use the variation (standard deviation / mean) to determine X. Once this value
   remains fairly constant with increasing X, we can be confident that our results are representative.
 """
-SOLVER = "CBS"
+# SOLVER = "CBS"
 
 
 def print_mapf_instance(my_map, starts, goals):
@@ -143,12 +143,13 @@ if __name__ == '__main__':
     n_agents = args.instance.split("n-agents")[1].split("_")[0]
     env = args.instance.split("env")[1].split("_")[0]
     # solvers = ["CBS","Prioritized", "Distributed"]
-    solvers = ["Prioritized"]
+    solvers = ["CBS", "Prioritized", "Distributed"]
 
     for solver_name in solvers:
+        print(f"Running solver: {solver_name}")
         result_file = open(f"statistics_files/env{env}-n_agents{n_agents}-{solver_name}.csv", "w")
         result_file.write("File index,Travel time,Path distance,Travel time ratio,Path length ratio,"
-                          "Travel time standard deviation,Computation time\n")
+                          "Travel time standard deviation,Number of failed instances,Computation time\n")
         env_mean_travel_times = []
         env_mean_path_distances = []
         env_mean_time_ratios = []
@@ -157,6 +158,7 @@ if __name__ == '__main__':
         env_sd_travel_time = []
         n_failed_instances = 0
         for file in sorted(glob.glob(args.instance)):
+            print(f"Running instance: {file}")
 
             my_map, starts, goals = import_mapf_instance(file)
 
@@ -202,7 +204,7 @@ if __name__ == '__main__':
             env_mean_computation_times.append(map_mean_computation_time)
 
             result_file.write(f"{file_index}, {map_mean_travel_time}, {map_mean_path_distance}, {map_mean_time_ratio}, "
-                              f"{map_mean_distance_ratio},{map_sd_travel_time} {map_mean_computation_time}\n")
+                              f"{map_mean_distance_ratio}, {map_sd_travel_time}, {n_failed_instances}, {map_mean_computation_time}\n")
         result_file.close()
 
         plot_data = open(f"statistics_files/plot_data/plot_data-env{env}-n_agents{n_agents}-{solver_name}.csv", "w")

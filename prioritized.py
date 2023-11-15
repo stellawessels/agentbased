@@ -41,14 +41,14 @@ class PrioritizedPlanningSolver(object):
             path = a_star(self.my_map, self.starts[i], self.goals[i], self.heuristics[i],
                           i, constraints, self.goals, path_lengths)
             if path is None:
-                None
+                return None
             else:
                 path_lengths.append(len(path))
             result.append(path)
             ##############################
             # Task 2: Add constraints here
 
-            for j,k in enumerate(path):
+            for j, k in enumerate(path):
                 #print(f"path{path}, j {j}, k {k}")
                 if i + 1 < self.num_of_agents:
                     #print("i+1",i+1)
