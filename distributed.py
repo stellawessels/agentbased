@@ -1,7 +1,7 @@
 import time as timer
 from single_agent_planner import a_star, compute_heuristics
 
-#probeersel - kijken of de agent naar open locaties wilt verplaatsen uit de weg voor de ander - bijvoorbeeld nodig voor edgecollision.txt
+# probeersel - kijken of de agent naar open locaties wilt verplaatsen uit de weg voor de ander - bijvoorbeeld nodig voor edgecollision.txt
 """
 def find_fallback_location(self, current_location, next_location, occupied_locations):
     directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]  # 4 directions: up, down, right, left
@@ -36,34 +36,40 @@ class DistributedPlanningSolver:
         paths = []
         path_lengths = []
         constraints = []
-
+        # Find most direct root for each agent
         for i in range(self.num_of_agents):
             path = a_star(self.my_map, self.starts[i], self.goals[i], self.heuristics[i], i, constraints, self.goals,
                           path_lengths)
+            # Append each path and path length to the lists
             paths.append(path)
             path_lengths.append(len(path) if path else 0)
 
+        # Find the maximum path length
         max_timesteps = max(len(path) for path in paths)
         timestep = 0
-        print(paths)
+        # print(paths)
 
         while timestep < max_timesteps:
             has_conflicts = True
 
             while has_conflicts:
+                # Make a dictionary with each agent and their location at each timestep
                 timestep_location_list = []
                 for agentnumber, agentpath in enumerate(paths):
                     for timestep_agentpath, location_agentpath in enumerate(agentpath):
                         timestep_location_list.append(
                             {'agent': agentnumber, 'loc': location_agentpath, 'timestep': timestep_agentpath})
                 # print(timestep_location_list)
-
+                # Find all conflicts at each timestep
                 conflicts = []
                 for position1 in timestep_location_list:
                     for position2 in timestep_location_list:
+                        # Vertex conflicts (i.e. same location at same timestep)
+                        # Note that an agent cannot have a conflict with itself (hence first if-statement)
                         if position1['agent'] < position2['agent'] and position1['timestep'] == position2['timestep']:
                             if position1['loc'] == position2['loc']:
                                 conflicts.append((position1, position2, 'vertex'))
+                                # Edge conflicts (i.e. agents swap positions)
                             elif position1['timestep'] > 0 and position2['timestep'] > 0:
                                 prev_loc1 = paths[position1['agent']][position1['timestep'] - 1]
                                 prev_loc2 = paths[position2['agent']][position2['timestep'] - 1]
@@ -78,9 +84,11 @@ class DistributedPlanningSolver:
 
                     # Resolve only conflicts at the lowest timestep
                     for conflict in lowest_timestep_conflicts:
-                        print(conflict)
+                        # print(conflict)
                         agent1, agent2, constrainttype = conflict
-
+                        # Find the agent with the longest remaining path
+                        # This is done by finding the first time is at the constraint location and subtracting
+                        # the timestep at which that occurs from the total path length
                         l1 = 0
                         for step in paths[agent1['agent']]:
                             # print(step)
@@ -100,6 +108,8 @@ class DistributedPlanningSolver:
                         remaining_length_2 = path_lengths[agent2['agent']] - l2
                         # print(remaining_length_1)
                         # print(remaining_length_2)
+
+                        # Determine which agent to adjust (one with smallest remaining path)
                         if remaining_length_1 > remaining_length_2:
                             agent_to_adjust = agent2['agent']
                         else:
@@ -117,8 +127,8 @@ class DistributedPlanningSolver:
                         constraints.append(constraint)
                         print('constraints_list', constraints)
 
-                        new_start = paths[agent_to_adjust][agent1['timestep']-1 ] if agent1['timestep'] > 0 else \
-                        self.starts[agent_to_adjust]
+                        new_start = paths[agent_to_adjust][agent1['timestep'] - 1] if agent1['timestep'] > 0 else \
+                            self.starts[agent_to_adjust]
                         new_path = a_star(self.my_map, new_start, self.goals[agent_to_adjust],
                                           self.heuristics[agent_to_adjust], agent_to_adjust, constraints, self.goals,
                                           path_lengths)

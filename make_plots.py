@@ -7,7 +7,7 @@ import numpy as np
 
 criteria_options = ["Travel time", "Path distance", "Travel time ratio", "Path length ratio",
                     "Travel time standard deviation", "Ratio failed instances", "Computation time"]
-criteria_option = ["Ratio failed instances"]  # Adjust this to change the criteria you want to plot
+criteria_option = ["Computation time"]  # Adjust this to change the criteria you want to plot
 numb_agents = 8
 env = 1
 solvers = ["CBS", "Prioritized"]

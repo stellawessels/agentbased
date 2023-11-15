@@ -41,7 +41,6 @@ class PrioritizedPlanningSolver(object):
             path = a_star(self.my_map, self.starts[i], self.goals[i], self.heuristics[i],
                           i, constraints, self.goals, path_lengths)
             if path is None:
-                print("none")
                 None
             else:
                 path_lengths.append(len(path))
