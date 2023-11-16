@@ -36,12 +36,12 @@ for i in range(len(solvers)):
     y_final_final = y_final[i*num_x_ticks:i*num_x_ticks + num_x_ticks]
     offset = 0.25 * multiplier
     multiplier += 1
-    ax.bar(np.arange(num_x_ticks) + offset, y_final_final[0], width=0.25, label=f"{solvers[i]}")
-    # ax.scatter(range(1, numb_agents + 1), y_final_final[0], label=f"{solvers[i]}")
+    # ax.bar(np.arange(num_x_ticks) + offset, y_final_final[0], width=0.25, label=f"{solvers[i]}")
+    ax.scatter(range(1, numb_agents + 1), y_final_final[0], label=f"{solvers[i]}")
 plt.title(f"{criteria_option[0]} performance for the algorithms in environment {env}")
 plt.xlabel("Number of agents")
 plt.ylabel(f"{criteria_option[0]}")
-plt.xticks(np.arange(num_x_ticks), np.arange(1, num_x_ticks + 1))  # for bar plots
-# plt.xticks(np.arange(numb_agents + 1))  # for scatter plots
+# plt.xticks(np.arange(num_x_ticks), np.arange(1, num_x_ticks + 1))  # for bar plots
+plt.xticks(np.arange(numb_agents + 1))  # for scatter plots
 plt.legend()
 plt.show()

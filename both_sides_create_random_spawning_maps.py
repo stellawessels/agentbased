@@ -5,24 +5,48 @@ def create_map(env, numb_agents, file_index):
     # This is done with a dictionary, where the key is the agent name and the value is a tuple of the coordinates.
     # One dictionary for start locations with location (x,y) and one for goal locations with location (x,y).
     start_locations = {}
-    start_locations_old = {}
+    start_locations_old_left = {}
+    start_locations_old_right = {}
     goal_locations = {}
-    goal_locations_old = {}
+    goal_locations_old_left = {}
+    goal_locations_old_right = {}
+
     for agent in range(numb_agents):
-        start_locations[f"agent_{agent}"] = (random.randint(0, 1),
-                                             random.randint(0, 8))
-        # Check that the starting location has not already been taken by another agent.
-        while start_locations[f"agent_{agent}"] in start_locations_old.values():
+        # Choose a random side to start on
+        start_side = random.choice(["left", "right"])
+        if start_side == "left":
             start_locations[f"agent_{agent}"] = (random.randint(0, 1),
                                                  random.randint(0, 8))
-        start_locations_old[f"agent_{agent}"] = start_locations[f"agent_{agent}"]
-        # Repeat the same process for the goal locations.
-        goal_locations[f"agent_{agent}"] = (random.randint(20, 21),
-                                            random.randint(0, 8))
-        while goal_locations[f"agent_{agent}"] in goal_locations_old.values():
+
+            # Check that the starting location has not already been taken by another agent.
+            while start_locations[f"agent_{agent}"] in start_locations_old_left.values():
+                start_locations[f"agent_{agent}"] = (random.randint(0, 1),
+                                                     random.randint(0, 8))
+            start_locations_old_left[f"agent_{agent}"] = start_locations[f"agent_{agent}"]
+            # Repeat the same process for the goal locations.
             goal_locations[f"agent_{agent}"] = (random.randint(20, 21),
                                                 random.randint(0, 8))
-        goal_locations_old[f"agent_{agent}"] = goal_locations[f"agent_{agent}"]
+            while goal_locations[f"agent_{agent}"] in goal_locations_old_left.values():
+                goal_locations[f"agent_{agent}"] = (random.randint(20, 21),
+                                                    random.randint(0, 8))
+            goal_locations_old_left[f"agent_{agent}"] = goal_locations[f"agent_{agent}"]
+        if start_side == "right":
+            start_locations[f"agent_{agent}"] = (random.randint(20, 21),
+                                                 random.randint(0, 8))
+
+            # Check that the starting location has not already been taken by another agent.
+            while start_locations[f"agent_{agent}"] in start_locations_old_right.values():
+                start_locations[f"agent_{agent}"] = (random.randint(20, 21),
+                                                     random.randint(0, 8))
+            start_locations_old_right[f"agent_{agent}"] = start_locations[f"agent_{agent}"]
+            # Repeat the same process for the goal locations.
+            goal_locations[f"agent_{agent}"] = (random.randint(0, 1),
+                                                random.randint(0, 8))
+            while goal_locations[f"agent_{agent}"] in goal_locations_old_right.values():
+                goal_locations[f"agent_{agent}"] = (random.randint(0, 1),
+                                                    random.randint(0, 8))
+            goal_locations_old_right[f"agent_{agent}"] = goal_locations[f"agent_{agent}"]
+
     # Create the environment, depending on the environment number.
     # Include all the agents in the environment, as per the format.
     if env == 1:
@@ -87,8 +111,8 @@ def create_map(env, numb_agents, file_index):
 
 
 # Set the environment number and number of agents.
-env = 2  # 1, 2, or 3
-numb_agents = 6  # max 18
-numb_maps = 250
+env = 1  # 1, 2, or 3
+numb_agents = 7  # max 18
+numb_maps = 1
 for index in range(numb_maps):
     create_map(env, numb_agents, index)

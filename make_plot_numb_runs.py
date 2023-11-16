@@ -8,7 +8,7 @@ solvers = ["Prioritized", "CBS"]
 # solvers = ["CBS"]
 criteria_options = ["Travel time", "Path distance", "Travel time ratio", "Path length ratio",
                     "Travel time standard deviation", "Number of failed instances", "Computation time"]
-criteria_option = ["Travel time"]  # Adjust this to change the criteria you want to plot
+criteria_option = ["Computation time"]  # Adjust this to change the criteria you want to plot
 # Get the data we want to plot
 data = {solver: pd.read_csv(f"statistics_files/env{env}-n_agents{numb_agents}-{solver}.csv")
         for solver in solvers}

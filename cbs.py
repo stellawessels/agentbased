@@ -199,7 +199,7 @@ class CBSSolver(object):
         #             3. Otherwise, choose the first collision and convert to a list of constraints (using your
         #                standard_splitting function). Add a new child node to your open list for each constraint
         #           Ensure to create a copy of any objects that your child nodes might inherit
-        time_limit = 500
+        time_limit = 250
         while self.open_list:
             # print(timer.time() - self.start_time)
             if timer.time() - self.start_time > time_limit:
