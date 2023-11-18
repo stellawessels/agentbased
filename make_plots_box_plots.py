@@ -15,28 +15,52 @@ numb_agents = 6
 env = [1, 2, 3]
 solvers = ["CBS", "Prioritized"]
 # Get the data we want to plot
-data = {(solver, environment): pd.read_csv(f"statistics_files/env{environment}-n_agents{numb_agents}-{solver}.csv")
-        for solver in solvers for environment in env}
-plot_dictionary = {}
-for solver in solvers:
-    for environment in env:
-        plot_dictionary[(solver, environment)] = data[(solver, environment)][criteria_option[0]]
-# plot_dictionary["0"] = [0] * 249
-df = pd.DataFrame(plot_dictionary)
-# sns.boxplot(data=df[[("CBS", 1), ("Prioritized", 1),
+df1 = pd.read_csv(f"statistics_files/env1-n_agents{numb_agents}-CBS.csv")
+df1["Solver"] = "CBS"
+df1["Environment"] = 1
+df2 = pd.read_csv(f"statistics_files/env1-n_agents{numb_agents}-Prioritized.csv")
+df2["Solver"] = "Prioritized"
+df2["Environment"] = 1
+df3 = pd.read_csv(f"statistics_files/env2-n_agents{numb_agents}-CBS.csv")
+df3["Solver"] = "CBS"
+df3["Environment"] = 2
+df4 = pd.read_csv(f"statistics_files/env2-n_agents{numb_agents}-Prioritized.csv")
+df4["Solver"] = "Prioritized"
+df4["Environment"] = 2
+df5 = pd.read_csv(f"statistics_files/env3-n_agents{numb_agents}-CBS.csv")
+df5["Solver"] = "CBS"
+df5["Environment"] = 3
+df6 = pd.read_csv(f"statistics_files/env3-n_agents{numb_agents}-Prioritized.csv")
+df6["Solver"] = "Prioritized"
+df6["Environment"] = 3
+df = pd.concat([df1, df2, df3, df4, df5, df6])
+sns.boxplot(x=df["Environment"], y=df["Path distance"], hue=df["Solver"])
+plt.title(f"{criteria_option[0]} performance for the algorithms for {numb_agents} agents")
+plt.show()
+
+
+# data = {(solver, environment): pd.read_csv(f"statistics_files/env{environment}-n_agents{numb_agents}-{solver}.csv")
+#         for solver in solvers for environment in env}
+# plot_dictionary = {}
+# for solver in solvers:
+#     for environment in env:
+#         plot_dictionary[(solver, environment)] = data[(solver, environment)][criteria_option[0]]
+# # plot_dictionary["0"] = [0] * 249
+# df = pd.DataFrame(plot_dictionary)
+# # sns.boxplot(data=df[[("CBS", 1), ("Prioritized", 1),
+# #     ("CBS", 2), ("Prioritized", 2),
+# #     ("CBS", 3), ("Prioritized", 3)]
+# #     ], fill=False)
+# df[[("CBS", 1), ("Prioritized", 1),
 #     ("CBS", 2), ("Prioritized", 2),
 #     ("CBS", 3), ("Prioritized", 3)]
-#     ], fill=False)
-df[[("CBS", 1), ("Prioritized", 1),
-    ("CBS", 2), ("Prioritized", 2),
-    ("CBS", 3), ("Prioritized", 3)]
-    ].plot(kind='box')
-#
-plt.title(f"{criteria_option[0]} performance for the algorithms for {numb_agents} agents")
-plt.xlabel("1                                  2                                     3 \n Environment number")
-plt.ylabel(f"{criteria_option[0]}")
-plt.xticks(np.arange(1, 7), labels=["CBS", "Prioritized", "CBS", "Prioritized", "CBS", "Prioritized"])
-plt.show()
+#     ].plot(kind='box')
+# #
+# plt.title(f"{criteria_option[0]} performance for the algorithms for {numb_agents} agents")
+# plt.xlabel("1                                  2                                     3 \n Environment number")
+# plt.ylabel(f"{criteria_option[0]}")
+# plt.xticks(np.arange(1, 7), labels=["CBS", "Prioritized", "CBS", "Prioritized", "CBS", "Prioritized"])
+# plt.show()
 
 
 
