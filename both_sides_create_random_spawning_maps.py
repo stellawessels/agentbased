@@ -88,7 +88,7 @@ def create_map(env, numb_agents, file_index):
         map_with_agents = f
         return map_with_agents
     elif env == 3:
-        f = open(f"instances/evaluation_maps/env{env}_n-agents{numb_agents}_index{file_index}.txt", 'w')
+        f = open(f"instances/evaluation_maps/both_side_env{env}_n-agents{numb_agents}_index{file_index}.txt", 'w')
         f.write("9 22\n "
                 ". . @ @ @ @ . . . @ @ @ @ . . . @ @ @ @ . .\n"
                 ". . . . . . . @ . . . . . . @ . . . . . . .\n"

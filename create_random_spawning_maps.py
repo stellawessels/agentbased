@@ -87,8 +87,8 @@ def create_map(env, numb_agents, file_index):
 
 
 # Set the environment number and number of agents.
-env = 2  # 1, 2, or 3
-numb_agents = 6  # max 18
+env = 1  # 1, 2, or 3
+numb_agents = 12  # max 18
 numb_maps = 250
 for index in range(numb_maps):
     create_map(env, numb_agents, index)

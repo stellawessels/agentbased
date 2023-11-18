@@ -199,7 +199,7 @@ class CBSSolver(object):
         #             3. Otherwise, choose the first collision and convert to a list of constraints (using your
         #                standard_splitting function). Add a new child node to your open list for each constraint
         #           Ensure to create a copy of any objects that your child nodes might inherit
-        time_limit = 250
+        time_limit = 30
         while self.open_list:
             # print(timer.time() - self.start_time)
             if timer.time() - self.start_time > time_limit:
@@ -284,10 +284,10 @@ class CBSSolver(object):
         # return root['paths']
 
 
-    def print_results(self, node):
+    def print_results(self, parent):
         print("\n Found a solution! \n")
         CPU_time = timer.time() - self.start_time
         print("CPU time (s):    {:.2f}".format(CPU_time))
-        print("Sum of costs:    {}".format(get_sum_of_cost(node['paths'])))
+        print("Sum of costs:    {}".format(get_sum_of_cost(parent['paths'])))
         print("Expanded nodes:  {}".format(self.num_of_expanded))
         print("Generated nodes: {}".format(self.num_of_generated))

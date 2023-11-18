@@ -10,7 +10,7 @@ criteria_options = ["Travel time", "Path distance", "Travel time ratio", "Path l
                     "Travel time standard deviation", "Number of failed instances", "Computation time"]
 criteria_option = ["Computation time"]  # Adjust this to change the criteria you want to plot
 # Get the data we want to plot
-data = {solver: pd.read_csv(f"statistics_files/env{env}-n_agents{numb_agents}-{solver}.csv")
+data = {solver: pd.read_csv(f"saved/env{env}-n_agents{numb_agents}-{solver}.csv")
         for solver in solvers}
 # print(data)
 # Get the variance of the criteria per number of successful runs, for all values of number of successful runs
@@ -50,11 +50,19 @@ fig, ax = plt.subplots()
 ax.plot(variances_prioritized, label="Prioritized")
 ax.plot(variances_cbs, label="CBS")
 # ax.plot(variances_distributed, label="Distributed")
-plt.title(f"{criteria_option[0]} variance for the algorithms in environment {env}")
+plt.title(f"Variance of average {criteria_option[0]} for the algorithms \n in environment {env}, with {numb_agents} agents")
 plt.xlabel("Number of successful runs")
-plt.ylabel(f"{criteria_option[0]} variance")
+plt.ylabel(f"Variance of average {criteria_option[0]}")
 # plt.xticks(range(max_no_runs + 1))
 plt.legend()
+
+# ax.plot(np.linspace(150, 200, 50), np.linspace(0.73, 0.73, 50), linestyle='--', color='black')
+# ax.plot(np.linspace(150, 200, 50), np.linspace(0.73*0.95, 0.73*0.95, 50), linestyle='--', color='black')
+# ax.plot(np.linspace(150, 200, 50), np.linspace(0.73*1.05, 0.73*1.05, 50), linestyle='--', color='black')
+#
+# ax.plot(np.linspace(0, 50, 50), np.linspace(0.77, 0.77, 50), linestyle='--', color='black')
+# ax.plot(np.linspace(0, 50, 50), np.linspace(0.77*0.95, 0.77*0.95, 50), linestyle='--', color='black')
+# ax.plot(np.linspace(0, 50, 50), np.linspace(0.77*1.05, 0.77*1.05, 50), linestyle='--', color='black')
 plt.show()
 
 
