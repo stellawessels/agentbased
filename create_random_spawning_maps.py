@@ -1,5 +1,8 @@
 import random
 
+
+""" The goal of this code is to create random maps with agents spawning on only one side of the map.
+Firs the function is made and you can run the program at the bottom to create the maps."""
 def create_map(env, numb_agents, file_index):
     # Define starting and goal coordinates for each agent.
     # This is done with a dictionary, where the key is the agent name and the value is a tuple of the coordinates.
@@ -87,7 +90,7 @@ def create_map(env, numb_agents, file_index):
 
 
 # Set the environment number and number of agents.
-env = 1  # 1, 2, or 3
+env = 2  # 1, 2, or 3
 numb_agents = 12  # max 18
 numb_maps = 250
 for index in range(numb_maps):

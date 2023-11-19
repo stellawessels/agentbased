@@ -1,5 +1,8 @@
 import random
 
+
+""" The goal of this code is to create random maps with agents spawning on both sides of the map.
+Firs the function is made and you can run the program at the bottom to create the maps."""
 def create_map(env, numb_agents, file_index):
     # Define starting and goal coordinates for each agent.
     # This is done with a dictionary, where the key is the agent name and the value is a tuple of the coordinates.
@@ -12,12 +15,11 @@ def create_map(env, numb_agents, file_index):
     goal_locations_old_right = {}
 
     for agent in range(numb_agents):
-        # Choose a random side to start on
+        # Choose a random side to start on (the finish side is automatically the other side).
         start_side = random.choice(["left", "right"])
         if start_side == "left":
             start_locations[f"agent_{agent}"] = (random.randint(0, 1),
                                                  random.randint(0, 8))
-
             # Check that the starting location has not already been taken by another agent.
             while start_locations[f"agent_{agent}"] in start_locations_old_left.values():
                 start_locations[f"agent_{agent}"] = (random.randint(0, 1),
@@ -33,7 +35,6 @@ def create_map(env, numb_agents, file_index):
         if start_side == "right":
             start_locations[f"agent_{agent}"] = (random.randint(20, 21),
                                                  random.randint(0, 8))
-
             # Check that the starting location has not already been taken by another agent.
             while start_locations[f"agent_{agent}"] in start_locations_old_right.values():
                 start_locations[f"agent_{agent}"] = (random.randint(20, 21),
@@ -50,7 +51,7 @@ def create_map(env, numb_agents, file_index):
     # Create the environment, depending on the environment number.
     # Include all the agents in the environment, as per the format.
     if env == 1:
-        f = open(f"instances/evaluation_maps/env{env}_n-agents{numb_agents}_index{file_index}.txt", 'w')
+        f = open(f"instances/evaluation_maps/both_side_env{env}_n-agents{numb_agents}_index{file_index}.txt", 'w')
         f.write("9 22\n "
                 ". . @ @ @ @ . . . @ @ @ @ . . . @ @ @ @ . .\n"
                 ". . . . . . . . . . . . . . . . . . . . . .\n"
@@ -69,7 +70,7 @@ def create_map(env, numb_agents, file_index):
         map_with_agents = f
         return map_with_agents
     elif env == 2:
-        f = open(f"instances/evaluation_maps/env{env}_n-agents{numb_agents}_index{file_index}.txt", 'w')
+        f = open(f"instances/evaluation_maps/both_side_env{env}_n-agents{numb_agents}_index{file_index}.txt", 'w')
         f.write("9 22\n "
                 ". . @ @ @ @ . . . @ @ @ @ . . . @ @ @ @ . .\n"
                 ". . . . . . . @ . . . . . . @ . . . . . . .\n"
@@ -111,8 +112,8 @@ def create_map(env, numb_agents, file_index):
 
 
 # Set the environment number and number of agents.
-env = 1  # 1, 2, or 3
-numb_agents = 7  # max 18
-numb_maps = 1
+env = 3  # 1, 2, or 3
+numb_agents = 12  # max 18
+numb_maps = 250
 for index in range(numb_maps):
     create_map(env, numb_agents, index)

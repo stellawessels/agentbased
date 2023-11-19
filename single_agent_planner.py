@@ -109,7 +109,6 @@ def is_constrained(curr_loc, next_loc, next_time, constraint_table):
     #               by time step, see build_constraint_table.
 
     # Execute if the key next_time is in the constraint table
-    # print(f"next time: {next_time}")
     if next_time in constraint_table:
         # Make a list of constrained locations
         list_constrained_locations = constraint_table[next_time]
@@ -123,13 +122,10 @@ def is_constrained(curr_loc, next_loc, next_time, constraint_table):
                 list_vertex_constraints.append(list_constrained_locations[i][0])
             else:
                 list_edge_constraints.append(list_constrained_locations[i])
-        # print(f"list_vertex_constraints: {list_vertex_constraints}")
-        # print(f"list_edge_constraints: {list_edge_constraints}")
         # Check if there is a constraint
         for edge_constraint in list_edge_constraints:
             if [curr_loc, next_loc] == edge_constraint:
                 return True
-
         for constrained_location in list_vertex_constraints:
             if next_loc == constrained_location:
                 return True
@@ -179,9 +175,6 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
     root = {'loc': start_loc, 'g_val': 0, 'h_val': h_value, 'parent': None, 'timestep': timestep}
     push_node(open_list, root)
     closed_list[(root['loc'], root['timestep'])] = root
-    #print("timestep", timestep)
-    #print(agent)
-
 
     while len(open_list) > 0:
         curr = pop_node(open_list)
@@ -193,8 +186,6 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
         #############################
         # Task 1.4: Adjust the goal test condition to handle goal constraints
         current_timestep = curr['timestep']
-
-
         if curr['loc'] == goal_loc and current_timestep > earliest_goal_constraint_timestep:
             return get_path(curr)
         if agent > 0:
@@ -228,13 +219,15 @@ def a_star(my_map, start_loc, goal_loc, h_values, agent, constraints, goals, pat
                 push_node(open_list, child)
                 # Use the push_node function to push child to open_list
 
-    return None # Failed to find solutions
+    return None  # Failed to find solutions
 
 
+# Below are a number of self-made functions which calculate the values needed for the performance indicators to
+# evaluate the performance of the algorithms
 def get_path_distance(path):
     distance = 0
     for i in range(len(path) - 1):
-        if path[i] != path[i+1]:
+        if path[i] != path[i + 1]:
             distance += 1
     return distance
 
@@ -246,8 +239,10 @@ def get_path_time(path):
 
 
 def get_distance_ratio(path, my_map, start, goal, heuristic, i, constraints, goals, path_lengths):
-    return get_path_distance(path) / get_path_distance(a_star(my_map, start, goal, heuristic, i, constraints, goals, path_lengths))
+    return get_path_distance(path) / get_path_distance(
+        a_star(my_map, start, goal, heuristic, i, constraints, goals, path_lengths))
+
 
 def get_time_ratio(path, my_map, start, goal, heuristic, i, constraints, goals, path_lengths):
-    return get_path_time(path) / get_path_time(a_star(my_map, start, goal, heuristic, i, constraints, goals, path_lengths))
-
+    return get_path_time(path) / get_path_time(
+        a_star(my_map, start, goal, heuristic, i, constraints, goals, path_lengths))

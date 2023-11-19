@@ -27,6 +27,7 @@ class IndependentSolver(object):
         """ Finds paths for all agents from their start locations to their goal locations."""
 
         start_time = timer.time()
+        path_lengths = []
         result = []
 
         ##############################
@@ -35,7 +36,7 @@ class IndependentSolver(object):
         for i in range(self.num_of_agents):
             # Find path for each agent
             path = a_star(self.my_map, self.starts[i], self.goals[i], self.heuristics[i],
-                          i, [])
+                          i, [],  self.goals, path_lengths)
             if path is None:
                 raise BaseException('No solutions')
             result.append(path)

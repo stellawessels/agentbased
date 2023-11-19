@@ -15,25 +15,24 @@ This data includes:
     - Mean ratio of travel time of agents compared to most direct path time
     - Mean ratio of path length of agents compared to most direct path length
     - Mean computation time (do we add a max here? What kind of penalty would we give for that?
-      If prioritized has no solution does it get the same penalty?)
+      If prioritized has no solution does it get the same penalty?) Conclusion: We add a max of 30 seconds here.
     - System-wide: how does each algorithm do with more obstacles in the above criteria?
 
-
-
-
-How does an algorithm react to an agent stopping in its tracks?
+How does an algorithm react to an agent stopping in its tracks? (Not implemented)
  - Could be simulated by having an agent have its goal location in the middle of the map.
     -> check how the agents reacts (we don't want it to move out of the way when it is at its goal,
        or in other words when it has stopped.
  - Could also update the map with an obstacle in the middle of the map at a specific timestep?
-
-
-X is determined by ...?
-- Ensure that there is enough 'successful' runs to be sure our conclusion for X is correct
-- Option (not my idea) is to use the variation (standard deviation / mean) to determine X. Once this value
-  remains fairly constant with increasing X, we can be confident that our results are representative.
+ 
+ The output of the code is 2 files. One csv file containing the performance indicators for each successful run of 
+ each algorithm on each map. The other file is a csv file containing the average performance indicators for each 
+ algorithm.
 """
-# SOLVER = "CBS"
+# Run this code with the following command in the terminal:
+# python stats.py --instance instances/env1_n-agents5_index0.txt
+# The instance is the name of the file you want to run the statistics on. You can add a * after index
+# to run all files in a folder for that environment and agent number.
+# Note that the solver is determined by the solvers list on line 134.
 
 
 def print_mapf_instance(my_map, starts, goals):
@@ -127,13 +126,6 @@ def import_mapf_instance(filename):
     return my_map, starts, goals
 
 
-# Set the environment number and number of agents.
-# env = 1  # 1, 2, or 3
-# numb_agents = 2  # max 18
-# numb_maps = 100
-# for index in range(numb_maps):
-#     create_map(env, numb_agents, index)
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Runs various MAPF algorithms')
     parser.add_argument('--instance', type=str, default=None,
@@ -143,7 +135,7 @@ if __name__ == '__main__':
     n_agents = args.instance.split("n-agents")[1].split("_")[0]
     env = args.instance.split("env")[1].split("_")[0]
     # solvers = ["CBS","Prioritized", "Distributed"]
-    solvers = ["Prioritized", "CBS"]
+    solvers = ["Prioritized", "CBS"]  # Here the solvers used are defined, add or remove solvers here.
 
     for solver_name in solvers:
         print(f"Running solver: {solver_name}")

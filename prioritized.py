@@ -29,13 +29,11 @@ class PrioritizedPlanningSolver(object):
         start_time = timer.time()
         result = []
         path_lengths = []
-        constraints = [#{'agent': 0, 'loc': [(1, 5)], 'timestep': 10}
-                       #{'agent': 1, 'loc': [(1, 3), (1, 4)], 'timestep': 2},
-                       #{'agent': 1, 'loc': [(1, 3), (1, 2)], 'timestep': 2}
-                       ]
+        constraints = [  # {'agent': 0, 'loc': [(1, 5)], 'timestep': 10}
+            # {'agent': 1, 'loc': [(1, 3), (1, 4)], 'timestep': 2},
+            # {'agent': 1, 'loc': [(1, 3), (1, 2)], 'timestep': 2}
+        ]
 
-        # {'agent': 1, 'loc': [(1, 1)], 'timestep': 1}
-        # constraints.append({'agent': 0, 'loc': [(1, 2)], 'timestep': 5}) # Test constraint to see whether the constrained_table is formatted correctly.
         for i in range(self.num_of_agents):  # Find path for each agent
 
             path = a_star(self.my_map, self.starts[i], self.goals[i], self.heuristics[i],
@@ -49,22 +47,15 @@ class PrioritizedPlanningSolver(object):
             # Task 2: Add constraints here
 
             for j, k in enumerate(path):
-                #print(f"path{path}, j {j}, k {k}")
                 if i + 1 < self.num_of_agents:
-                    #print("i+1",i+1)
-                    #print(self.num_of_agents)
-                    for q in range(i+1,self.num_of_agents):
-                        #print(self.num_of_agents)
-                        #print(q)
+                    for q in range(i + 1, self.num_of_agents):
                         constraints.append({'agent': q, 'loc': [k], 'timestep': j})
-                        if j+1 < len(path):
-                            constraints.append({'agent': q, 'loc': [path[j+1],k], 'timestep': j+1})
+                        if j + 1 < len(path):
+                            constraints.append({'agent': q, 'loc': [path[j + 1], k], 'timestep': j + 1})
             #         Useful variables:
             #            * path contains the solution path of the current (i'th) agent, e.g., [(1,1),(1,2),(1,3)]
             #            * self.num_of_agents has the number of total agents
             #            * constraints: array of constraints to consider for future A* searches
-
-            # print("constraints", constraints)
             ##############################
 
         self.CPU_time = timer.time() - start_time
